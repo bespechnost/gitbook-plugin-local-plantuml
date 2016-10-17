@@ -50,26 +50,18 @@ module.exports = {
                 var imagePath = path.join(os.tmpdir(), imageName);
                 var cwd = cwd || process.cwd();
 
-                this.log.debug('using tempDir ', os.tmpdir());
-
-                if (fs.existsSync(imagePath)) {
-                    this.log.info('skipping plantUML image for ', imageName);
-                } else {
-                    this.log.info('rendering plantUML image to ', imageName);
-                    childProcess.spawnSync('java', [
-                            '-Dplantuml.include.path=' + cwd,
-                            '-Djava.awt.headless=true',
-                            '-jar', PLANTUML_JAR,
-                            '-pipe'
-                        ],
-                        {
-                            // TODO: Extract stdout to a var and persist with this.output.writeFile
-                            stdio: ['pipe', fs.openSync(imagePath, 'w'), 'pipe'],
-                            input: umlText
-                        });
-                }
-
-                this.log.debug('copying plantUML from tempDir for ', imageName);
+                childProcess.spawnSync('java', [
+                        '-Dplantuml.include.path=' + cwd,
+                        '-Djava.awt.headless=true',
+                        '-jar', PLANTUML_JAR,
+                        '-pipe',
+                        '-charset', 'UTF-8'
+                    ],
+                    {
+                        // TODO: Extract stdout to a var and persist with this.output.writeFile
+                        stdio: ['pipe', fs.openSync(imagePath, 'w'), 'pipe'],
+                        input: umlText
+                    });
 
                 this.output.copyFile(imagePath, imageName);
 
