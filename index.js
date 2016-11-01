@@ -51,7 +51,7 @@ module.exports = {
                 var cwd = cwd || process.cwd();
 
                 childProcess.spawnSync('java', [
-                        '-Dplantuml.include.path=' + cwd,
+                        '-Dplantuml.include.path=' + pagePath.dir,
                         '-Djava.awt.headless=true',
                         '-jar', PLANTUML_JAR,
                         '-pipe',
