@@ -46,7 +46,7 @@ module.exports = {
         plantuml: {
             process: function (block) {
                 var umlText = parseUmlText(block, pagePath, this.log);
-                var imageName = hashedImageName(umlText) + '.png';
+                var imageName = hashedImageName(umlText) + '.svg';
                 var imagePath = path.join(os.tmpdir(), imageName);
                 var cwd = cwd || process.cwd();
 
@@ -55,6 +55,7 @@ module.exports = {
                         '-Djava.awt.headless=true',
                         '-jar', PLANTUML_JAR,
                         '-pipe',
+                        '-tsvg',
                         '-charset', 'UTF-8'
                     ],
                     {
@@ -65,7 +66,26 @@ module.exports = {
 
                 this.output.copyFile(imagePath, imageName);
 
-                return '<img src="' + path.join('/', imageName) + '"/>';
+                return `
+                        <style>
+                            .svg-schemes svg{
+                                max-width: 100%;
+                                display: block;
+                                margin: 0 auto;
+                                height: auto !important;
+                            }
+                            .svg-schemes svg *{
+                                filter: none !important;
+                            }
+                            .svg-schemes p{
+                                text-align: center;
+                            }
+                        </style>
+                        <div class="svg-schemes">
+                            ${fs.readFileSync(imagePath,'utf-8')}
+                            <p><a href="${path.join("/", imageName)}" target="_blank">Open in a new tab.</a></p>
+                        </div>
+                        `;
             }
         }
     }
