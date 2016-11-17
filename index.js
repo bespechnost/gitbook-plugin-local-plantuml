@@ -40,6 +40,7 @@ module.exports = {
     hooks: {
         'page:before': function (page) {
             pagePath = path.parse(page.rawPath);
+            return page;
         }
     },
     blocks: {
