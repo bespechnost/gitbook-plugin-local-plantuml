@@ -1,4 +1,4 @@
-var os = require('os');
+var osTmpdir = require('os-tmpdir');
 var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
@@ -47,7 +47,7 @@ module.exports = {
             process: function (block) {
                 var umlText = parseUmlText(block, pagePath, this.log);
                 var imageName = hashedImageName(umlText) + '.svg';
-                var imagePath = path.join(os.tmpdir(), imageName);
+                var imagePath = path.join(osTmpdir(), imageName);
                 var cwd = cwd || process.cwd();
 
                 childProcess.spawnSync('java', [
